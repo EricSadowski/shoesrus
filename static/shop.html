@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="login.js"></script>
+    <script>
+
+
+/******** TODO TAKE JS OUT OF HERE AND LINK IT
+//  */ 
+var sortOrder = 'product_id';
+// var cartNum = JSON.parse(sessionStorage.getItem("cart")).length;
+
+
+$(document).ready(function () {
+
+  // if(cartNum!=0){
+  //   $("#cartNumber").html(cartNum);
+  // }
+
+
+// get sortOrder (for trying to sort from another page) from session storage
+const sortOrder = sessionStorage.getItem('sortOrder');
+
+// call sortOrder if existing sortOrder in session storage
+if (sortOrder) {
+    sortBy(sortOrder);
+} else {
+    refreshProducts();
+}
+
+// remove sortOrder from session storage 
+sessionStorage.removeItem('sortOrder');
+
+if (sessionStorage.getItem("username") !== null) {
+   $("#loginDiv").hide();
+} else {
+   // Key is not defined
+}
+
+});
+
+
+
+
+
+        function createAddToCartListener(product) {
+    $("#" + product.product_id).on("click", function(e) {
+        e.preventDefault();  // Prevent anchor tag default
+
+        // Store in sessionStorage
+        fetch("/api/shop/" + product.product_id)
+            .then(res => res.blob())
+            .then(blob => {
+                blobToDataURL(blob, data => {
+                    let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
+                    let existingItem = cart.findIndex(item => item.productId === product.product_id);
+                    // check for existing item
+                    if (existingItem > -1) {
+                        // Increment quantity if item already exists in cart
+                        cart[existingItem].quantity++;
+                    } else {
+                        // Otherwise add the item to the cart
+                        let item = {
+                            productId: product.product_id,
+                            name: product.p_name,
+                            brand: product.brand,
+                            category: product.category,
+                            price: product.price,
+                            size: product.size,
+                            quantity: 1,  // pass quantity as well in session storage
+                            image: data,
+                        };
+                        cart.push(item);
+                    }
+
+                    sessionStorage.setItem("cart", JSON.stringify(cart));
+                });
+            });
+
+        console.log(JSON.parse(sessionStorage.getItem("cart")));    // debug show session storage
+        
+
+
+    });
+}
+
+function refreshProducts() {
+    $.ajax({
+        url: "/api/shop" + "?sortOrder=" + sortOrder,
+        type: "GET",
+        dataType: "json",
+        error: function(jqxhr, status, errorThrown) {
+            alert("AJAX error: " + jqxhr.responseText);
+        }
+        // productList is an array of json objects from products table
+    }).done(function(productList) {
+        $("#squareZone").html("");
+        for (var i = 0; i < productList.length; i++) {
+            var product = productList[i];
+            var result = '<div class="col-sm-4 text-center">' + '<div class="square text-center">' + 
+            '<img class="img-fluid square-img" src="/api/shop/' + product.product_id + '">' + '<h2 class="bold">' + product.p_name + '</h2>' +
+            '<h3>' + product.brand + " " +  product.category + '</h3>' + '<h3>' 
+                + product.size + '</h3>' + '<h3>' + product.price + "$" + '<a id="' + product.product_id 
+                    + '" href="#"><h3 id="addCart">Add to Cart</h3></a>' + '</div>' + '</div>';
+            $("#squareZone").append(result);
+
+            // Add click listener to add to cart buttons
+            createAddToCartListener(product);
+        }
+    });
+}
+
+        function sortBy(order) {
+            console.log("sorting by " + order);
+            sortOrder = order;
+            refreshProducts();
+        }
+
+        function blobToDataURL(blob, res) {
+            let filereader = new FileReader();
+            filereader.onload = function(e) {
+                res(e.target.result);
+            }
+            filereader.readAsDataURL(blob);
+}
+
+        
+    </script>
+</head>
+
+<body>
+        <nav class="navbar navbar-expand-md navbar-light bg-main">
+        <div class="container">
+            <a class="navbar-brand" href="#"><img src="images/logoShoe2.png" alt="logo" id="logoNav"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMainHeader"
+                aria-controls="navbarMainHeader" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarMainHeader">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item" onclick="sortBy('product_id')">
+                        <a class="nav-link active" href="#">New Arrivals</a>
+                    </li>
+                    <li class="nav-item" onclick="sortBy('men')">
+                        <a class="nav-link" href="#">Men's</a>
+                    </li>
+                    <li class="nav-item" onclick="sortBy('women')">
+                        <a class="nav-link" href="#">Women's</a>
+                    </li>
+                    <li class="nav-item" onclick="sortBy('kids')">
+                        <a class="nav-link" href="#">Kids</a>
+                    </li>
+                    <li class="nav-item" onclick="sortBy('Running')">
+                        <a class="nav-link" href="#">Running</a>
+                    </li>
+                    <li class="nav-item" onclick="sortBy('Basketball')">
+                        <a class="nav-link" href="#">Basketball</a>
+                    </li>
+                    <!-- Figure out how to sort sale items.. what parameters etc.. -->
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="sortBy('price')" href="#">Sale</a>
+                    </li>
+                    <li class="nav-item" id="loginZone">
+                        <button type="button" id="navLogin" class="btn btn-outline-warning btn-round" data-toggle="modal" data-target="#loginModal">
+                          Login
+                        </button>  
+  
+                        <div id="loggedIn">
+                          <p>Hello! <span id="userDisplay"></span> </p><p><a href="orders.html">Your Orders</a> <button id=logout>Logout</button></p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div id="cartNumber"></div>
+            <a class="navbar-brand" href="./cart.html"><img src="images/cart.svg" alt="cart" id="cartNav"></a>
+        </div>
+    </nav>
+
+
+    <!-- Main Product container -->
+    <div class="container">
+
+        <img id="blobber" src="">
+        <div id="squareZone" class="row">
+        </div>
+
+
+
+
+        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-md-5 mt-md-4 pb-5">
+    
+                        <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
+                        <p class="text-black-50 mb-5">Please enter your login and password!</p>
+          
+                        <div class="form-outline form-white mb-4">
+                          <input type="text" id="typeUserX" class="form-control form-control-lg" name="typeUserX" />
+                          <label class="form-label" for="typeUserX">Username</label>
+                        </div>
+          
+                        <div class="form-outline form-white mb-4">
+                          <input type="password" id="typePasswordX" class="form-control form-control-lg" name="typePasswordX" />
+                          <label class="form-label" for="typePasswordX">Password</label>
+                        </div>
+                        <button class="btn btn-outline-dark btn-lg px-5" id="loginButton" type="submit">Login</button>
+                      </div>
+              </div>
+                <div class="modal-footer d-flex justify-content-center">
+                  <div class="signup-section">Not a member yet? <a href="auth.html" class="text-info"> Sign Up</a>.</div>
+                </div>
+            </div>
+          </div>
+          </div>
+
+
+
+
+          
+          <footer class="footer">
+            <div class="container-fluid">
+              <div class="row">
+    
+                <div class="col-md-4 col-12 mb-3 mb-md-0 text-center text-md-start" id="quote-form">
+                    
+                    <h5>FAQ</h5>
+                    <h5>Order Status</h5>
+                    <h5 id="adminLink"><a href="adminItems.html">Admin</a></h5>
+                    <h5 id="regLink"><a href="auth.html">Register</a></h5>
+                </div>
+
+                <div class="col-md-4 col-12 text-center">
+                  <h5 class="mt-md-0 footer-text">Contact Us</h5>
+                  <p>
+                    <a href="tel:5141234567" class="phone-link">
+                      <i class="bi bi-telephone-fill me-2 phone-icon"></i>514-123-4567
+                    </a>
+                  </p>
+                  <p class="footer-text">
+                    <i class="bi bi-geo-alt-fill me-2 address-icon"></i>
+                    1234 Street Name<br>
+                    Montreal<br>
+                    Quebec<br>
+                    Postal Code
+                  </p>
+                </div>
+       
+                <div class="col-md-4 col-12 text-center text-md-end">
+                  <div class="social-container">
+                    <h5 id="followUs" class="mb-3 footer-text">Follow us!</h5>
+                    <div class="d-flex justify-content-center justify-content-md">
+                      <a href="#" class="me-3">
+                        <i class="bi bi-facebook social-icon"></i>
+                      </a>
+                      <a href="#" class="me-3">
+                        <i class="bi bi-instagram social-icon"></i>
+                      </a>
+                      <a href="#" class="me-3">
+                        <i class="bi bi-youtube social-icon"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+            
+                <div class="row mt-3">
+                  <div class="col-md-12 text-center">
+                    <span class="text-muted">&copy; Shoes R Us. All Rights Reserved</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </footer>
+		  
+
+
+
+
+
+        </div>
+         
+        </body>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script>
+
+
+        $(document).ready(function () {
+            $("#centerContent").hide();
+           var role = sessionStorage.getItem("role");
+
+
+            if(role == "admin"){
+            $("#centerContent").show();
+            
+            refreshList();
+
+            $("#saveOrAdd").click(function () { // add or update
+                let p_nameVal = $("input[name=p_name]").val();
+                console.log($("input[name=file]").prop('files'));
+                let file = $("input[name=file]").prop('files')[0];
+
+                let sizeVal = $("input[name=size]").val();
+                let categoryVal = $("input[name=category]").val();
+                let brandVal = $("input[name=brand]").val();
+                let shoeTypeVal = $("input[name=shoeType]").val();
+                let priceVal = $("input[name=price]").val();
+                let quantityVal = $("input[name=quantity]").val();
+                let colorVal = $("input[name=color]").val();
+                
+                let mimeTypeVal = file.type;
+                // https://javascript.info/file  (about FileReader, see readAsDataURL )
+                let reader = new FileReader();
+                reader.onload = function () {
+                    // console.log(reader.result); // careful, may print out hundreds of lines of binary
+                    // magically "reader.result" hold the contents of the selected file, btoa() encodes it to base64
+                    docObj = { p_name: p_nameVal, mimeType: mimeTypeVal, image: btoa(reader.result),
+                    size: sizeVal, category: categoryVal, brand: brandVal, shoe_type: shoeTypeVal,
+                    price: priceVal, quantity_available: quantityVal, color: colorVal }
+                    $.ajax({ // FIXME: escape special characters using urlencode
+                        url: "/api/shop",
+                        type: "POST",
+                        dataType: "json",
+                        data: docObj,
+                        error: function (jqxhr, status, errorThrown) {
+                            alert("AJAX error: " + jqxhr.responseText);
+                        }
+                    }).done(function () {
+                        alert("upload successful");
+                        refreshList();
+                    });
+                };
+                reader.onerror = function () {
+                    console.log(reader.error);
+                    alert(reader.error);
+                };
+                //reader.readAsDataURL(file); // read file and trigger one of the above handlers
+                reader.readAsBinaryString(file);
+
+                return;
+            });
+        }else{
+            sweetAlert("Admin Only").then(function(){
+                    window.open("index.html","_self")	
+                 });
+        }
+        });
+
+
+
+        function refreshList() {
+            console.log("Refreshing");
+            $.ajax({ // future: headers for authentication, url parameters for sorting, etc.
+                url: "/api/shop",
+                type: "GET",
+                dataType: "json",
+                error: function (jqxhr, status, errorThrown) {
+                    alert("AJAX error: " + jqxhr.responseText);
+                }
+            }).done(function (list) {
+                //TODO allow display of all fields
+                var result = '<tr><th>#</th><th>p_name</th><th>Data</th><th>Preview</th><th>Mime type</th></tr>';
+                for (var i = 0; i < list.length; i++) {
+                    var item = list[i];
+                    result += '<tr>';
+                    result += '<td>' + item.product_id + '</td>';
+                    result += '<td>' + item.p_name + '</td>';
+                    result += '<td><a href="/api/shop/' + item.product_id + '">click</a></td>';
+                    result += '<td><img src="/api/shop/' + item.product_id + '" height=100>click</a></td>';
+                    result += '<td>' + item.mimeType + '</td>';
+                    result += '</tr>' + "\n";
+                }
+                $("#listTable").html(result);
+            });
+        }
+
+    </script>
+</head>
+
+<body>
+    <div id="centerContent">
+        <div id="listPane">
+            <button id="showAddItem">Add item</button>
+            <table id="listTable" border="1"></table>
+        </div>
+        <div id="viewAddEditPane">
+            Product Name: <input type="text" name="p_name" required><br>
+            Category: <input type="text" name="category" required><br>
+            Brand: <input type="text" name="brand" required><br>
+            Shoe Type: <input type="text" name="shoeType" required><br>
+            Size: <input type="number" name="size" required><br>
+            Price: <input type="number" name="price" required><br>
+            Color: <input type="text" name="color"><br>
+            Quantity Available: <input type="number" name="quantity" required><br>
+            Image: <input type="file" name="file" required><br>
+            <button id="saveOrAdd">Upload (add)</button>
+        </div>
+    </div>
+</body>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+</html>

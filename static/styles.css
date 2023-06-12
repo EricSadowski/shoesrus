@@ -1,0 +1,123 @@
+body {
+    color: black;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.bold {
+    margin-top: .5em;
+    font-weight: bolder;
+    font-size: 2.3em;
+}
+
+.square{
+    background-color: #ffd0b1;
+    width: 23em;
+    height: 35em;
+    padding: 2em;
+    margin-bottom: 2em;
+}
+
+.square h3 {
+    font-size: 1em;
+}
+
+.card-text {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    
+}
+
+.btn-primary {
+    margin-top:20px;
+}
+
+.remove-item {
+    margin-top:20px;
+}
+
+#card-container {
+     top:40px; 
+
+}
+
+.square-img{
+    width: 100%;
+    height: 100%;
+}
+
+.orderItem{
+    margin-bottom: 2em;
+}
+
+.orderContainer{
+    margin-top: 3em;
+    text-align: center;
+}
+
+.cart-image {
+    width: 240px;
+    /* margin-top: 2em;
+    margin-left: 22em; */
+}
+
+.form-control.cart-item-quantity {
+    width: 50%;
+}
+
+.cart-hr {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+
+
+/* nav section */
+#cartNav{
+    height: 3em;
+}
+
+#navbarMainHeader a:hover{
+    color: rgb(0, 0, 0);
+}
+
+#navbarMainHeader a{
+    color: rgb(68, 64, 64);
+    padding-right: 2em;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+#loggedIn{
+    font-size: .7em;
+    
+}
+
+
+/* footer section */
+
+footer{
+    padding-top: 2em;
+}
+		  
+#followUs{
+    text-align: center;
+}
+
+.social-icon {
+    color:black;
+    font-size: xx-large;
+}
+
+/* landing page */
+
+.home-container {
+    background-image: url('images/banner.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 150vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}

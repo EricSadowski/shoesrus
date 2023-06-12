@@ -1,0 +1,206 @@
+DAILY SCRUM - EVERY DAY AT 9AM (as soon as  you arrive)
+==========================================================
+
+In your shared Git repository create file "dailyscrum.txt".
+ALL members of the team will write to this one file every morning at 9am.
+
+Each member writes down answers to 3 questions in the following format:
+
+<< current date goes here >>
+1. What I have done / not done since last Scrum?
+2. What I plan to do from this scrum to next? (next 24 hours)
+3. Where do I need assistance? What do I need to figure out?
+
+Example entries for one day, both team members:
+
+2018/02/28 Gregory
+1. Done / not done since last scrum:
+- created project plan
+- created database mockup
+- did not write the description yet
+2. To do until next Scrum:
+- finish the description
+- setup the initial project
+- create the custom dialog for user login
+- setup the database
+3. Need assistance / figure things out
+- find and test a library for PDF printouts
+- find out how to fetch data from URL and parse JSON
+
+2018/02/28 Jerry
+1. Done since last scrum
+- lkjsadf
+- asldkfj
+2. Plan until next Scrum
+- lkjasdf
+- asfdasfd
+3. Need assistance / figure things out
+- laksdjfl
+
+
+2023-06-06
+
+Brian
+1. Done since last scrum
+- Project Proposal / made ER diagram and helped with Page 1 & 6 of Project Proposal
+2. Plan until next scrum
+- Finish Proposal & Submit, Create Database, Create Tables in Database, Connect Server to Database
+3. Need assistance / figure things out
+- What shoes should I fill the products table with?
+Eric
+1. Done since last scrum
+- Project proposal / make mockups
+2. Plan until next Scrum
+- Start product page + Header
+- Populate it with items from API
+3. Need assistance / figure things out
+- item categories and sorting calls for many types of products
+Shaunpaul
+1. What I have done / not done since last Scrum?
+Set up project proposal with team members, use case diagram
+2. What I plan to do from this scrum to next? (next 24 hours)
+Begin shopping cart front-end, prepare for integration with database
+3. Where do I need assistance? What do I need to figure out?
+What else is associated with a usual shopping cart page?
+
+2023-06-07
+
+Brian
+1. Done since last scrum
+- Fixed issues with Product Proposal and submitted
+- Created database, tables and tried to populate products pages, will add more
+- Tested connection
+- Researched translator API and currency exchance API
+2. Plan until next scrum
+- Finish populating database tables
+- Work on helping with making pages and having all http requests working properly and error handling
+3. Need assistance / figure things out
+- What shoes should I fill the products table with?
+- Need help having new user 'shoelace' be able to have permissions in database.
+Eric
+1. Done since last scrum
+- Connected api to get and populated html, header/basic html
+2. Plan until next Scrum
+- continue with products page, general organization
+3. Need assistance / figure things out
+- n/a .. possibly database
+Shaunpaul
+1. What I have done / not done since last Scrum?
+Set up shopping cart page, added POST functionality for add to cart
+2. What I plan to do from this scrum to next? (next 24 hours)
+implement GET for add to cart, to dynamically show items on shopping cart page
+3. Where do I need assistance? What do I need to figure out?
+need to figure out how to associate this with a user other than temporarily using a known user_id
+
+
+6/8/2023
+Eric Sadowski
+done since last
+front page populates and sorts, got a some pictures and did housecleaning
+plan until next:
+implement register/login
+need assistance/figure things out:
+hosting and probably register/login
+
+Shaunpaul Anthony
+
+1. Done since last scrum
+seperate route and controllers
+cart controller logic
+ 2. Plan until next scrum
+- implement add to cart sessionstorage functionality for shop page
+- transfer add to cart data to POST as pending order
+3. Need assistance / figure things out
+- Need to figure out how to implement all the click handlers
+
+6/9/2023
+
+Brian
+1. Done since last scrum
+- Attempted to do fixmes, had conflicts, gave up.
+2. Plan until next scrum
+- Nav Bar, Footer and possibly other things to do with design.
+3. Need assistance / figure things out
+- What shoes should I fill the products table with?
+- Need help having new user 'shoelace' be able to have permissions in database.
+- Still not resolved.
+
+Eric
+done since last:
+Login and register work
+plan until next:
+Finish login/reg help with cart other various tasks
+need assistance/figure things out:
+User testing / Cart
+
+
+Shaunpaul
+1. Done since last scrum
+- reworked addToCart POST to submitOrder POST
+- added click listeners and store in session storage for shop.html items when clicked (add to cart)
+- removed promises to keep code in line
+ 2. Plan until next scrum
+- add to cart currently adds the same product, instead of the appropriate product
+- communicate this sessionStorage data with cart page on front end, and with submitOrder on back end
+3. Need assistance / figure things out
+- How to best handle quantities?
+
+6/11/2023
+
+Shaunpaul
+1. Done since last scrum
+- updated cart page to show image blobs
+- user can change quantity in cart
+- user can remove cart items
+- front end order summary calculation dynamically updated when cart items change
+- cart styling
+2. Plan until next scrum
+- more cart styling, show additional product details (already in sessionStorage)
+- need checkout button to check/send to login page
+- checkout page as barrier between cart and submit order button
+3. Need assistance / figure things out
+- considering changing category field in products to tags, or adding additional tag field,
+    will help us with sortBy nav links for products with overlapping tags ((kids, skateboarding, basketball, sale) as tags and (men, women) as categories)
+
+Eric
+1.Done since last
+-order page working
+-all product images are now blobs
+-admin can add items to the database
+-admin can log in
+-nav looks cleaner
+2. Plan until next
+-fix login button
+-add validation on posts
+-footer?
+-sort by type?
+3. need assistance
+with sort by type or maybe front end css
+
+
+Shaunpaul
+1. Done since last scrum
+- added quantity for each item sent to session storage
+- trying to work out how to add items without duplicates, but increase quantity
+- set up preliminary checkout page
+2. Plan until next scrum
+- need to pass item quantity between shop, cart, and checkout
+- assist in sortBy functions on navbar
+- final HTML/CSS styling
+- final test of functionalities and simulate user/admin experience
+3. Need assistance / figure things out
+- may need to consult with teammates to link registration and login for validation prior to order
+
+
+Eric
+1. Done since last scrum
+-login button and nav user display
+-validation of input fields to database
+-footer
+-landing page
+2. Plan until next scrum
+-host app
+-sort by
+-help with cart
+3. Need assistance / figure things out
+- might need help with hosting
