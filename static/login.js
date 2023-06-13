@@ -11,10 +11,6 @@ $(document).ready(function () {
         $("#loggedIn").show();
         $("#userDisplay").html(userLog)
 
-        // var login = '<div id="loggedIn">'  +
-        //     '<p>Hello! ' + sessionStorage.getItem("username") + '</p>' + '<p><a href="#">Your Orders</a> <button id=logout>Logout</button></p>' +  '</div>';
-
-        //$("#loginZone").append(login);
 
      } else {
         $("#loggedIn").hide();

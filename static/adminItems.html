@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Shoes R Us - Admin</title>
     <link rel="stylesheet" href="/styles.css">
+    <link rel="icon" href="images/favicon.ico">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script>
 
@@ -43,7 +44,7 @@
                     docObj = { p_name: p_nameVal, mimeType: mimeTypeVal, image: btoa(reader.result),
                     size: sizeVal, category: categoryVal, brand: brandVal, shoe_type: shoeTypeVal,
                     price: priceVal, quantity_available: quantityVal, color: colorVal }
-                    $.ajax({ // FIXME: escape special characters using urlencode
+                    $.ajax({ 
                         url: "/api/shop",
                         type: "POST",
                         dataType: "json",
@@ -76,7 +77,7 @@
 
         function refreshList() {
             console.log("Refreshing");
-            $.ajax({ // future: headers for authentication, url parameters for sorting, etc.
+            $.ajax({ 
                 url: "/api/shop",
                 type: "GET",
                 dataType: "json",
@@ -84,15 +85,14 @@
                     alert("AJAX error: " + jqxhr.responseText);
                 }
             }).done(function (list) {
-                //TODO allow display of all fields
                 var result = '<tr><th>#</th><th>p_name</th><th>Data</th><th>Preview</th><th>Mime type</th></tr>';
                 for (var i = 0; i < list.length; i++) {
                     var item = list[i];
                     result += '<tr>';
                     result += '<td>' + item.product_id + '</td>';
                     result += '<td>' + item.p_name + '</td>';
-                    result += '<td><a href="/api/shop/' + item.product_id + '">click</a></td>';
-                    result += '<td><img src="/api/shop/' + item.product_id + '" height=100>click</a></td>';
+                    result += '<td><a href="/api/shop/' + item.product_id + '">Preview</a></td>';
+                    result += '<td><img src="/api/shop/' + item.product_id + '" height=100></td>';
                     result += '<td>' + item.mimeType + '</td>';
                     result += '</tr>' + "\n";
                 }

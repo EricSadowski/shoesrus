@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shop</title>
+    <title>Shoes R Us - Shop</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="images/favicon.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -18,14 +19,12 @@
 /******** TODO TAKE JS OUT OF HERE AND LINK IT
 //  */ 
 var sortOrder = 'product_id';
-// var cartNum = JSON.parse(sessionStorage.getItem("cart")).length;
+var cartNum = 0;
 
 
 $(document).ready(function () {
 
-  // if(cartNum!=0){
-  //   $("#cartNumber").html(cartNum);
-  // }
+  
 
 
 // get sortOrder (for trying to sort from another page) from session storage
@@ -44,14 +43,9 @@ sessionStorage.removeItem('sortOrder');
 if (sessionStorage.getItem("username") !== null) {
    $("#loginDiv").hide();
 } else {
-   // Key is not defined
 }
 
 });
-
-
-
-
 
         function createAddToCartListener(product) {
     $("#" + product.product_id).on("click", function(e) {
@@ -88,11 +82,17 @@ if (sessionStorage.getItem("username") !== null) {
             });
 
         console.log(JSON.parse(sessionStorage.getItem("cart")));    // debug show session storage
-        
+        // cartCounter();
 
 
     });
 }
+
+cartNum = JSON.parse(sessionStorage.getItem("cart")).length;
+  if(cartNum!==0){
+    $("#cartNumber").html(cartNum);
+  }
+
 
 function refreshProducts() {
     $.ajax({
@@ -108,10 +108,11 @@ function refreshProducts() {
         for (var i = 0; i < productList.length; i++) {
             var product = productList[i];
             var result = '<div class="col-sm-4 text-center">' + '<div class="square text-center">' + 
-            '<img class="img-fluid square-img" src="/api/shop/' + product.product_id + '">' + '<h2 class="bold">' + product.p_name + '</h2>' +
+            '<img class="img-fluid square-img" src="/api/shop/' + product.product_id + '">' + 
+            '<h2 class="bold">' + product.p_name + '</h2>' +
             '<h3>' + product.brand + " " +  product.category + '</h3>' + '<h3>' 
-                + product.size + '</h3>' + '<h3>' + product.price + "$" + '<a id="' + product.product_id 
-                    + '" href="#"><h3 id="addCart">Add to Cart</h3></a>' + '</div>' + '</div>';
+                + product.size + '</h3>' + '<h3>' + product.price + "$" +  '<br><button id="' 
+                  + product.product_id + '" class="btn btn-outline-primary add-to-cart my-3">Add to Cart</button>' + '</div>' + '</div>';
             $("#squareZone").append(result);
 
             // Add click listener to add to cart buttons
@@ -134,6 +135,12 @@ function refreshProducts() {
             filereader.readAsDataURL(blob);
 }
 
+function cartCounter(){
+  cartNum = JSON.parse(sessionStorage.getItem("cart")).length;
+  
+  $("#cartNumber").html(cartNum);
+}
+
         
     </script>
 </head>
@@ -141,7 +148,7 @@ function refreshProducts() {
 <body>
         <nav class="navbar navbar-expand-md navbar-light bg-main">
         <div class="container">
-            <a class="navbar-brand" href="#"><img src="images/logoShoe2.png" alt="logo" id="logoNav"></a>
+            <a class="navbar-brand" href="index.html"><img src="images/logoShoe2.png" alt="logo" id="logoNav"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMainHeader"
                 aria-controls="navbarMainHeader" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -166,7 +173,6 @@ function refreshProducts() {
                     <li class="nav-item" onclick="sortBy('Basketball')">
                         <a class="nav-link" href="#">Basketball</a>
                     </li>
-                    <!-- Figure out how to sort sale items.. what parameters etc.. -->
                     <li class="nav-item">
                         <a class="nav-link" onclick="sortBy('price')" href="#">Sale</a>
                     </li>

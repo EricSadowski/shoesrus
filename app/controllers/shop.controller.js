@@ -41,7 +41,7 @@ exports.findAll = (req, res) => {
     const sortOrder = req.query.sortOrder ? req.query.sortOrder : "product_id"; // sort by product_id if no sortOrder provproduct_ided
     if (!validSortOrders.includes(sortOrder)) {
         res.status(400).send({
-            message: "invalproduct_id sort order value"
+            message: "invalid sort order value"
         });
         return;
     }
@@ -49,7 +49,7 @@ exports.findAll = (req, res) => {
         if (err)
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while retrieving todos."
+                    err.message || "Some error occurred while retrieving."
             });
         else res.status(200).send(list);
     });
@@ -65,7 +65,7 @@ exports.findOne = (req, res) => {
                 });
             } else {
                 res.status(500).send({
-                    message: "Error retrieving ToDo with product_id " + req.params.product_id
+                    message: "Error retrieving with product_id " + req.params.product_id
                 });
             }
         } else {

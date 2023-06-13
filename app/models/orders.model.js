@@ -91,7 +91,7 @@ Orders.update = (order, result) => {
 
 Orders.findByUser = (user_id, result) => {
     // FIXME: prevent SQL injection
-    db.query(`SELECT * FROM orders WHERE user_id = ?`,[user_id], (err, res) => {
+    db.query(`SELECT * FROM orders WHERE user_id = ? ORDER BY order_id DESC`,[user_id], (err, res) => {
       if (err) {
         console.log("error: ", err);
         result(err, null);

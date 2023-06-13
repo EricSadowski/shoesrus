@@ -5,6 +5,7 @@ const Users = require("../models/users.model");
 const moment = require('moment');
 
 exports.submitOrder = (req, res) => {
+    // uses username and cartItems array
     const username = req.body.username;
     const cartItems = req.body.cartItems;
 
@@ -16,41 +17,42 @@ exports.submitOrder = (req, res) => {
             return;
         }
 
+        const user_id = user.user_id;
+
         let orderItems = [];
         let checkedItems = 0;
         let preTaxTotal = 0;
         let allItemsAvailable = true;
+        let itemOutOfStock = [];
 
         cartItems.forEach((item, index) => {
             productsClass.findById(item.productId, (err, product) => {
                 if (err || !product) {
                     console.log("Product not found.");
-                    res.status(404).send({
-                        message: `Product not found with id: ${item.productId}.`
-                    });
+                    itemOutOfStock.push(`Product not found with id: ${item.productId}.`);
                     allItemsAvailable = false;
-                    return;
-                }
-
-                if (item.quantity > product.quantity_available) {       // if quantity customer wants is more than what is available
+                } else if (item.quantity > product.quantity_available) { // if quantity customer wants is more than what is available
                     console.log('Not enough stock');
-                    res.status(400).send({
-                        message: `Not enough stock for product with id: ${item.productId}.`
-                    });
+                    itemOutOfStock.push(`Not enough stock for product with id: ${item.productId}.`);
                     allItemsAvailable = false;
-                    return;
+                } else {
+                    orderItems.push({
+                        product_id: item.productId,
+                        quantity: item.quantity,
+                        product: product
+                    });
                 }
-
-                orderItems.push({
-                    product_id: item.productId,
-                    quantity: item.quantity,
-                    product: product
-                });
-
+        
                 checkedItems++;
-
-                if (checkedItems === cartItems.length && allItemsAvailable) { // counter
-                    updateQuantities(orderItems);
+        
+                if (checkedItems === cartItems.length) {
+                    if (allItemsAvailable) {
+                        updateQuantities(orderItems);
+                    } else {
+                        res.status(400).send({
+                            message: itemOutOfStock.join(' ')
+                        });
+                    }
                 }
             });
         });
@@ -80,11 +82,12 @@ exports.submitOrder = (req, res) => {
         // FIXME: shipping currently calculated based on each cart item, need to remove and readjust code for flat rate shipping fee
         function calculateShipping(preTaxTotal) {
             // dummy calc
-            return preTaxTotal * 0.05;
+            /* return preTaxTotal * 0.05; */
+            return 25; // flat rate shipping fee of $25
         }
 
         function createOrderAndOrderItems(orderItems) {
-            Orders.create(user.id, (err, order) => {
+            Orders.create(user_id, (err, order) => {
                 if (err) {
                     res.status(500).send({
                         message: "Some error occurred while creating the Order."
@@ -113,7 +116,8 @@ exports.submitOrder = (req, res) => {
                     preTaxTotal += itemTotal;
                     order.pre_tax_total = preTaxTotal.toFixed(2);
                     order.taxes = calculateTaxes(parseFloat(order.pre_tax_total)).toFixed(2);
-                    order.shipping = calculateShipping(parseFloat(order.pre_tax_total)).toFixed(2);
+                    /* order.shipping = calculateShipping(parseFloat(order.pre_tax_total)).toFixed(2); */
+                    order.shipping = calculateShipping().toFixed(2);
                     order.final_total = (parseFloat(order.pre_tax_total) + parseFloat(order.taxes) + parseFloat(order.shipping)).toFixed(2);
                 });
 
